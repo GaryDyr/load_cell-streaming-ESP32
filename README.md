@@ -92,7 +92,8 @@ default tare value, there is a built-in calibration function that can be
 used to recalibrate for the length of a single run.
 
 5\. An issue that was not resolvable, was that a reset was required for
-each run.
+each run. Reset is automatic after data has been transferred. Data
+is therefore lost after transfer to the Google Sheet, or a failure.
 
 6\. A rotary encoder with push switch functionality controls the
 operational modes.
