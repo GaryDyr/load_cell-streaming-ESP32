@@ -309,6 +309,8 @@ void sendData() {
   }
   Serial.print("connecting to Google Script: ");
   Serial.println(host);
+  delay(3000);
+  ESP.restart(); //reboot the ESP to clear memory for next cycle
   //memory check stuff for testing
   /*
   uint32_t fhp = esp_get_free_heap_size();
@@ -555,7 +557,8 @@ void loop(){
     if (count < 500) {
       wt_value = scale.get_units(3);
       awt = String(wt_value,2); //convert wt to string
-      wts = wts + awt + ",";
+      wts += awt;
+      wts += ",";
       //Serial.println(wts);
       currentMillis = millis();
       atime = String((currentMillis - previousMillis)/1000.,2); 
@@ -564,7 +567,8 @@ void loop(){
       Serial.print(atime);
       Serial.print("; ");
       Serial.println(awt);
-      t1 = t1 + atime + ",";
+      t1 += atime;
+      t1 += ",";
       count++;    
     }
   }  
