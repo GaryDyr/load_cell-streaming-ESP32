@@ -243,6 +243,10 @@ void sendData() {
   int interval = 200; //will blink 1/s
   int waittime = 10000; //10 s
   int ledState = HIGH;
+  long scriptWaitTime = 20000;
+  long scriptNowTime;
+  long elapsedTime;
+  bool time_exceeded = 0;
   
   //generate the data stream.
   printData(); 
@@ -309,8 +313,6 @@ void sendData() {
   }
   Serial.print("connecting to Google Script: ");
   Serial.println(host);
-  delay(3000);
-  ESP.restart(); //reboot the ESP to clear memory for next cycle
   //memory check stuff for testing
   /*
   uint32_t fhp = esp_get_free_heap_size();
@@ -350,29 +352,50 @@ void sendData() {
                  "Connection: close\r\n\r\n");
   Serial.println("request sent");
   delay(2000);
+  //Can be an issue with Google not responding back, even though
+  // data was transferred, leading to infinite wait, timer forces
+  // quit after 20 s, which should be adequate. 
+  scriptNowTime = millis();
+  delay(1);
+  elapsedTime = scriptNowTime - millis();
   while (gsclient.connected()) {
+    scriptNowTime = millis();
     String line = gsclient.readStringUntil('\n');
     if (line == "\r") {
       Serial.println("headers received");
-      break;
+      break;  
+    }
+     elapsedTime = scriptNowTime - millis();  
+    if  (elapsedTime > scriptWaitTime) {
+      time_exceeded = true;    
+      break; // time exceeds 20s
     }
   }
   String line = gsclient.readStringUntil('\n');
   Serial.print("reply was: ");
-  
   Serial.println(line);
   //For whatever reason, initially saw "state", but later code was 287
   //According to HTTP registry codesin range 2xx are success.
     if (line.startsWith("{\"state\":\"success\"") || (line.startsWith("2"))) {
-    Serial.println("Data transfer successfull!");
-  } else {
-    Serial.println("Data transfer failed");
-    //indicate some sort of transfer failure.
-    blinker(waittime, interval);
-  }
+    Serial.println("Data transfer successfuls!");
+    }
+    else {
+      if (time_exceeded) {
+        Serial.println("Time for success msg from script exceeded; Rebooting anyway.");
+      }
+      else {
+        Serial.println("Data transfer failed");
+      }  
+      //indicate some sort of transfer failure.
+      blinker(waittime, interval);
+    }
   Serial.println("closing connection");
   gsclient.println("Connection:close"); 
   gsclient.stop();
+  digitalWrite(ONBOARD_LED, LOW);
+  delay(3000);
+  
+  ESP.restart();
 }
 
 void Calibrate_scale(){
@@ -557,8 +580,15 @@ void loop(){
     if (count < 500) {
       wt_value = scale.get_units(3);
       awt = String(wt_value,2); //convert wt to string
+<<<<<<< HEAD
+      //should use 
+      wts+=awt; 
+      wts+=","; 
+      //wts = wts + awt + ",";
+=======
       wts += awt;
       wts += ",";
+>>>>>>> 13e4c72baae187c06f0d0fc9824552d5fa1fb21d
       //Serial.println(wts);
       currentMillis = millis();
       atime = String((currentMillis - previousMillis)/1000.,2); 
@@ -567,8 +597,14 @@ void loop(){
       Serial.print(atime);
       Serial.print("; ");
       Serial.println(awt);
+<<<<<<< HEAD
+      t1+=atime;
+      t1+=",";
+      //t1 = t1 + atime + ",";
+=======
       t1 += atime;
       t1 += ",";
+>>>>>>> 13e4c72baae187c06f0d0fc9824552d5fa1fb21d
       count++;    
     }
   }  
