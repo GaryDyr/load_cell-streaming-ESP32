@@ -568,7 +568,7 @@ void loop(){
     Serial.print(rotar_state);
     Serial.print("; rotar change: ");
     Serial.println(rotar_direction);
-    if (rotar_direction < 0) { //i.e., CCW
+    if (rotar_direction == 255) { //i.e., CCW
       process_state = -1;
       rotary_onButtonClick(); //handles what happens
     }
