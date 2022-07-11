@@ -1248,3 +1248,19 @@ ary(0) = srow
 ary(1) = erow
 getLimits = ary
 End Function```
+
+**8. ADDENDUM**
+Not strictly related to this project was another scale streamig project that was set to use an ESP32
+module connected to three modules: a different 10kg piezo scale/module connected
+to an HX711 module, a DHT11 temperature humidity sensor, and a micro SDcard module. 
+In this case, the scale and DHT11 data were read and sebt to the SD card at around 30
+second intervals. All the modules were connected via a temporary solderless breadboard. The only 
+reason for the scale was to monitor the weight of soil samples in a container, and ultimately
+correlate with the DHT11 sensor output. Athough everything worked as intended, prelimiary tests
+outdoors gave highly variable weight data. The data ended up being useless. The reasons were not all 
+completely resolved, but clearly one was related to the effect of the sun and on either the scale ocomponents 
+or the poor wiring conditions of the wireless breadboard connections, or both. What became clear, was
+that a tare needed to be done before each measurements, which was not possible, as the system was 
+supposed to compile data without manual intervention. In theory, a servo arrangement could have been added
+to lift the container from the scale each time a value was to be recorded, but this was getting too far away from
+what the project was really about.
